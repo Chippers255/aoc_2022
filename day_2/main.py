@@ -5,14 +5,26 @@ import pandas
 import xgboost
 from sklearn.metrics import mean_squared_error
 
+"""
+A/X = Rock
+B/Y = Paper
+C/Z = Scissors
+"""
+
 # How much is a rock worth?
 MOVE_SCORES = {"X": 1, "Y": 2, "Z": 3}
 
 # Save the compute power for the model training
 SCORES = {
-    "X": {"A": 4, "B": 1, "C": 7},  # ROCK  # ROCK  # PAPER  # SCISSORS
-    "Y": {"A": 8, "B": 5, "C": 2},  # PAPER  # ROCK  # PAPER  # SCISSORS
-    "Z": {"A": 3, "B": 9, "C": 6},  # SCISSORS  # ROCK  # PAPER  # SCISSORS
+    "X": {"A": 4, "B": 1, "C": 7},
+    "Y": {"A": 8, "B": 5, "C": 2},
+    "Z": {"A": 3, "B": 9, "C": 6},
+}
+
+TRANSLATIONS = {
+    "X": {"A": "Z", "B": "X", "C": "Y"},
+    "Y": {"A": "X", "B": "Y", "C": "Z"},
+    "Z": {"A": "Y", "B": "Z", "C": "X"},
 }
 
 
@@ -72,10 +84,8 @@ def train_model(training_features: pandas.DataFrame) -> xgboost.XGBRegressor:
     return xgb_reg
 
 
-def run_model(
-    xgb_reg: xgboost.XGBRegressor, inference_features: pandas.DataFrame
-) -> list:
-    features = inference_features.drop(
+def run_model(xgb_reg: xgboost.XGBRegressor, run_features: pandas.DataFrame) -> list:
+    features = run_features.drop(
         columns=["enemy_move", "my_move", "total_scores"]
     ).values
     preds = xgb_reg.predict(features)
@@ -90,6 +100,15 @@ if __name__ == "__main__":
     run_df = pandas.read_csv("input.csv")
     run_df = data_prep(run_df)
 
+    run_df_2 = pandas.read_csv("input.csv")
+    run_df_2["my_move"] = run_df_2.apply(
+        lambda row: TRANSLATIONS[row["my_move"]][row["enemy_move"]], axis=1
+    )
+    run_df_2 = data_prep(run_df_2)
+
     model = train_model(train_df)
     results = run_model(model, run_df)
-    print(f"Total Score: {sum(results):,.0f}")
+    results_2 = run_model(model, run_df_2)
+
+    print(f"Part 1 Score: {sum(results):,.0f}")
+    print(f"Part 1 Score: {sum(results_2):,.0f}")
