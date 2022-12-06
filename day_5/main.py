@@ -9,22 +9,23 @@ def elf_crane_9000(supply_stacks, move):
         supply_stacks[to].insert(0, supply_stacks[fr].pop(0))
     return supply_stacks
 
+
 def elf_crane_9001(supply_stacks, move):
     # move 3 from 4 to 6
     fr = move[1] - 1
     to = move[2] - 1
-    supply_stacks[to] = supply_stacks[fr][:move[0]] + supply_stacks[to]
-    supply_stacks[fr] = supply_stacks[fr][move[0]:]
+    supply_stacks[to] = supply_stacks[fr][: move[0]] + supply_stacks[to]
+    supply_stacks[fr] = supply_stacks[fr][move[0] :]
     return supply_stacks
 
 
 def manifest_parser(file_name):
-    supply_stacks = [[],[],[],[],[],[],[],[],[]]
+    supply_stacks = [[], [], [], [], [], [], [], [], []]
     moves = []
 
     with open(file_name, "r") as f:
         for row in f:
-            fixed_row = row.replace('\n','')
+            fixed_row = row.replace("\n", "")
             if "move" in fixed_row:
                 fixed_row = [int(x) for x in re.findall(r"[0-9]+", fixed_row)]
                 moves.append(fixed_row)
@@ -38,7 +39,7 @@ def manifest_parser(file_name):
                     if row[col] != " ":
                         supply_stacks[stack].append(row[col])
                     stack += 1
-    
+
     return supply_stacks, moves
 
 
