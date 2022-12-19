@@ -1,14 +1,17 @@
 import tqdm
 
+
 class Monkey:
-    def __init__(self, starting_items: list, operation, check: int, next: tuple) -> None:
+    def __init__(
+        self, starting_items: list, operation, check: int, next: tuple
+    ) -> None:
         self.items = starting_items
         self.operation = operation
         self.check = check
         self.current_item = None
         self.true_monke, self.false_monke = next
         self.inspection_count = 0
-    
+
     def test(self, x: int) -> bool:
         if x % self.check == 0:
             return True
@@ -20,12 +23,15 @@ class Monkey:
             i = self.items.pop(0)
             i = self.operation(i)
             self.inspection_count += 1
-            i = int(i%x) # only figured this out thanks to chatgpt, so I am not submitting my answer
+            i = int(
+                i % x
+            )  # only figured this out thanks to chatgpt, so I am not submitting my answer
             if self.test(i):
                 send_it.append((i, self.true_monke))
             else:
                 send_it.append((i, self.false_monke))
         return send_it
+
 
 if __name__ == "__main__":
     """
@@ -41,20 +47,20 @@ if __name__ == "__main__":
     ]
     """
     monkeys = [
-        Monkey([79,98], lambda x: x * 19, 23, (2,3)),
-        Monkey([54,65,75,74], lambda x: x + 6, 19, (2,0)),
-        Monkey([79,60,97], lambda x: x * x, 13, (1,3)),
-        Monkey([74], lambda x: x + 3, 17, (0,1))
+        Monkey([79, 98], lambda x: x * 19, 23, (2, 3)),
+        Monkey([54, 65, 75, 74], lambda x: x + 6, 19, (2, 0)),
+        Monkey([79, 60, 97], lambda x: x * x, 13, (1, 3)),
+        Monkey([74], lambda x: x + 3, 17, (0, 1)),
     ]
 
-    val = 23*19*13*17
+    val = 23 * 19 * 13 * 17
 
     for round in range(10000):
         for m in monkeys:
             new_items = m.run_round(val)
             for i, n in new_items:
                 monkeys[n].items.append(i)
-        if round + 1 in [1,20,1000,2000,3000,4000,5000,6000,7000,8000,9000]:
+        if round + 1 in [1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]:
             print(round + 1)
             print([m.inspection_count for m in monkeys])
             print()

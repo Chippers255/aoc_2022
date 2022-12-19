@@ -3,15 +3,16 @@ DATA_STREAM = "rdzrddbgdbbqtbqbrrznznjzjjctcbtttrvrwwsvwssjfjcjnjzzqgzgzsggfddvn
 
 def find_answer_1(datastream: str) -> int:
     for i in range(4, len(datastream)):
-        a = datastream[i-4:i]
-        con = len(set(datastream[i-4:i]))
+        a = datastream[i - 4 : i]
+        con = len(set(datastream[i - 4 : i]))
         if con == 4:
             return i
 
+
 def find_answer_2(datastream: str) -> int:
     for i in range(14, len(datastream)):
-        a = datastream[i-14:i]
-        con = len(set(datastream[i-14:i]))
+        a = datastream[i - 14 : i]
+        con = len(set(datastream[i - 14 : i]))
         if con == 14:
             return i
 

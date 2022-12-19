@@ -1,7 +1,9 @@
 import math
-import numpy
-from typing import Tuple
 import time
+from typing import Tuple
+
+import numpy
+
 
 def make_numbers(char: str) -> int:
     """Letter can be number too you know."""
@@ -20,9 +22,9 @@ def build_landscape(file_name: str) -> numpy.array:
         for row in f:
             landscape.append(list(row.strip()))
     landscape = numpy.array(landscape)
-    start = numpy.where(landscape=="S")
+    start = numpy.where(landscape == "S")
     start = (start[0][0], start[1][0])
-    goal = numpy.where(landscape=="E")
+    goal = numpy.where(landscape == "E")
     goal = (goal[0][0], goal[1][0])
 
     vect = numpy.vectorize(make_numbers)
@@ -31,10 +33,10 @@ def build_landscape(file_name: str) -> numpy.array:
 
 def check_power_level(position: tuple, goal: tuple, map: numpy.array) -> float:
     """something over 6000"""
-    #return map[goal[0], goal[1]] - map[start[0], start[1]]
-    #return math.dist(position, goal)
+    # return map[goal[0], goal[1]] - map[start[0], start[1]]
+    # return math.dist(position, goal)
     return abs(goal[0] - position[0]) + abs(goal[1] - position[1])
-    #return math.dist(position, goal) + map[goal[0], goal[1]] - map[start[0], start[1]]
+    # return math.dist(position, goal) + map[goal[0], goal[1]] - map[start[0], start[1]]
 
 
 def popping(pq: list) -> Tuple[tuple, float, list]:
@@ -50,28 +52,31 @@ def look(position: tuple, map: numpy.array) -> list:
     max_x = len(map) - 1
     max_y = len(map[0]) - 1
     around = [
-        (x, y+1),
-        (x+1, y),
-        (x, y-1),
-        (x-1, y),
+        (x, y + 1),
+        (x + 1, y),
+        (x, y - 1),
+        (x - 1, y),
     ]
 
     valid_pos = []
     for xx, yy in around:
         if xx >= 0 and xx <= max_x and yy >= 0 and yy <= max_y:
             if (map[xx, yy] - map[x, y]) <= 1:
-                valid_pos.append((xx,yy))
+                valid_pos.append((xx, yy))
     return valid_pos
 
 
 def a_ster(start: tuple, goal: tuple, map: numpy.array):
     """Thanks wiki-bro... maybe I should donate that $2 they keep asking for."""
     # What if all data structures were dictionaries... except, I guess, my queue
-    pq = [(start, check_power_level(start, goal, map)),]
+    pq = [
+        (start, check_power_level(start, goal, map)),
+    ]
     came_from = {}
     travel_distance = {start: 0}
     estimated_scores = {start: check_power_level(start, goal, map)}
     import copy
+
     mm = copy.deepcopy(landscape)
 
     while len(pq) > 0:
@@ -110,7 +115,7 @@ if __name__ == "__main__":
     # part 2
     best = 99999
     landscape, _, goal = build_landscape("test.txt")
-    starts = numpy.where(landscape==1)
+    starts = numpy.where(landscape == 1)
     for i in range(len(starts[0])):
         start = (starts[0][i], starts[1][i])
         path = a_ster(start, goal, landscape)

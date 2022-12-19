@@ -1,61 +1,69 @@
+import math
+import random
+
 import brain
 import names
-import math
 import numpy
-import random
 
 
 class Human:
-    def __init__(self, new_brain: brain.Brain, goal: tuple, bounds: tuple, family_name: str = None) -> None:
+    def __init__(
+        self,
+        new_brain: brain.Brain,
+        goal: tuple,
+        bounds: tuple,
+        family_name: str = None,
+    ) -> None:
         self.first_name = names.get_first_name()
-        self.last_name = names.get_last_name() if family_name is not None else family_name
+        self.last_name = (
+            names.get_last_name() if family_name is not None else family_name
+        )
         self.brain = new_brain
         self.goal = goal
         self.travel_distance = 0
         self.goal_distance = None
         self.x_max, self.y_max = bounds
         self.height = 1
-        self.moves =  {
-            "Order": "",
-            "BAD": 0
-        }
-        self.position = (0,0)
-        #self.position = (random.randint(0,self.x_max), random.randint(0, self.y_max))
+        self.moves = {"Order": "", "BAD": 0}
+        self.position = (0, 0)
+        # self.position = (random.randint(0,self.x_max), random.randint(0, self.y_max))
         self.get_bearings()
         self.visits = {self.position: 1}
-        #self.rando_start_refresh()
-
+        # self.rando_start_refresh()
 
     def rando_start_refresh(self):
-        self.position = (random.randint(0,self.x_max), random.randint(0, self.y_max))
+        self.position = (random.randint(0, self.x_max), random.randint(0, self.y_max))
         self.get_bearings()
         self.visits = {self.position: 1}
         while self.goal_distance < 2.0:
-            self.position = (random.randint(0,self.x_max), random.randint(0, self.y_max))
+            self.position = (
+                random.randint(0, self.x_max),
+                random.randint(0, self.y_max),
+            )
             self.get_bearings()
             self.visits = {self.position: 1}
 
     def get_bearings(self) -> None:
         """Using GPS let's figure out how far away from E we are"""
         self.goal_distance = math.dist(self.position, self.goal)
-    
+
     def look(self, map):
         x, y = self.position
         inputs = [
-            map[x,y],
+            map[x, y],
             map[self.goal[0], self.goal[1]],
             self.goal[0] - x,
-            self.goal[1] - y
+            self.goal[1] - y,
         ]
 
         around = [
-            (x, y+1),
-            (x+1, y+1),
-            (x+1, y),
-            (x+1, y-1),
-            (x, y-1),
-            (x-1, y-1),
-            (x-1, y),
+            (x, y + 1),
+            (x + 1, y + 1),
+            (x + 1, y),
+            (x + 1, y - 1),
+            (x, y - 1),
+            (x - 1, y - 1),
+            (x - 1, y),
         ]
 
         for xx, yy in around:
@@ -78,7 +86,7 @@ class Human:
                     inputs.append(map[x, i] - map[x, y])
                 else:
                     inputs.append(-30)"""
-        
+
         inputs = numpy.array(inputs)
         inputs.astype(numpy.float64)
         return inputs
@@ -117,7 +125,7 @@ class Human:
         inputs = numpy.array(inputs)
         inputs.astype(numpy.float64)
         return inputs'''
-        
+
     def valid_move(self, move: str, map: numpy.array) -> bool:
         ogx, ogy = self.position
         height = map[ogx, ogy]
@@ -139,42 +147,52 @@ class Human:
 
             valid, x, y = self.valid_move(move, map)
             if valid:
-                self.position = (x,y)
+                self.position = (x, y)
                 self.get_bearings()
                 self.travel_distance += 1
                 self.moves["Order"] += move
                 self.height = map[x, y]
-                if (x,y) in self.visits:
-                    self.visits[(x,y)] += 1
+                if (x, y) in self.visits:
+                    self.visits[(x, y)] += 1
                 else:
-                    self.visits[(x,y)] = 1
+                    self.visits[(x, y)] = 1
             else:
                 self.moves["BAD"] += 1
-    
+
     def sim(self, map: numpy.array):
         pass
 
-
     def check_power_level(self) -> float:
         """IT'S OVER 9000"""
-        #return (self.goal_distance + (self.moves["BAD"]*1.5) + self.travel_distance - self.height) * max(self.visits.values())
-        #return 0 - self.height + (self.moves["BAD"] / 5.0)
+        # return (self.goal_distance + (self.moves["BAD"]*1.5) + self.travel_distance - self.height) * max(self.visits.values())
+        # return 0 - self.height + (self.moves["BAD"] / 5.0)
         return -self.height
 
     def mind_meld(self, other_human):
         """Even Mr. Spock can't keep a straight face at this one."""
-        family_name = self.last_name if self.check_power_level() < other_human.check_power_level() else other_human.last_name
+        family_name = (
+            self.last_name
+            if self.check_power_level() < other_human.check_power_level()
+            else other_human.last_name
+        )
         new_brain = brain.Brain()
         new_brain.wrinkles = self.brain.wrinkles
-        f = numpy.frompyfunc(wrinkle_baby,2,1)
+        f = numpy.frompyfunc(wrinkle_baby, 2, 1)
 
         # I couldn't think of a sexy way to do this so sue me
         for w in range(len(self.brain.weights)):
-            new_brain.weights.append({
-                "W": f(self.brain.weights[w]["W"],other_human.brain.weights[w]["W"]),
-                "B": f(self.brain.weights[w]["B"],other_human.brain.weights[w]["B"])
-            })
+            new_brain.weights.append(
+                {
+                    "W": f(
+                        self.brain.weights[w]["W"], other_human.brain.weights[w]["W"]
+                    ),
+                    "B": f(
+                        self.brain.weights[w]["B"], other_human.brain.weights[w]["B"]
+                    ),
+                }
+            )
         return Human(new_brain, self.goal, (self.x_max, self.y_max), family_name)
+
 
 def wrinkle_baby(weight, other_weight):
     if numpy.random.rand() <= 0.05:

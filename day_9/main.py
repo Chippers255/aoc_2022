@@ -49,12 +49,12 @@ def book_keeper(records: dict, new_pos: tuple) -> dict:
 
 
 if __name__ == "__main__":
-    head_pos = (0,0)
-    #tail_pos = (0,0)
-    head_visits = {(0,0): 1}
-    #tail_visits = {(0,0): 1}
-    other_pos = [(0,0) for _ in range(9)]
-    other_visits = [{(0,0): 1} for _ in range(9)]
+    head_pos = (0, 0)
+    # tail_pos = (0,0)
+    head_visits = {(0, 0): 1}
+    # tail_visits = {(0,0): 1}
+    other_pos = [(0, 0) for _ in range(9)]
+    other_visits = [{(0, 0): 1} for _ in range(9)]
 
     with open("input.csv", "r") as f:
         reader = csv.reader(f)
@@ -62,15 +62,15 @@ if __name__ == "__main__":
             for i in range(int(row[1])):
                 head_pos = move_head(head_pos, row[0], 1)
                 head_visits = book_keeper(head_visits, head_pos)
-                #tail_pos = move_tail(tail_pos, head_pos)
-                #tail_visits = book_keeper(tail_visits, tail_pos)
+                # tail_pos = move_tail(tail_pos, head_pos)
+                # tail_visits = book_keeper(tail_visits, tail_pos)
                 for i in range(9):
-                    relative_head = head_pos if i == 0 else other_pos[i-1]
+                    relative_head = head_pos if i == 0 else other_pos[i - 1]
                     other_pos[i] = move_tail(other_pos[i], relative_head)
                     other_visits[i] = book_keeper(other_visits[i], other_pos[i])
-    
+
     # part 1
-    #print(len(tail_visits))
+    # print(len(tail_visits))
     print(len(other_visits[0]))
 
     # part 2

@@ -1,5 +1,6 @@
 from typing import Tuple
 
+
 class ElfishComputationException(Exception):
     """
     If you try to knock me, you'll get mocked.
@@ -7,11 +8,13 @@ class ElfishComputationException(Exception):
     Your knees'll start shaking and your fingers pop.
     Like a pinch on the neck of Mr. Spock.
     """
+
     pass
+
 
 class CPU:
     """I made a class because Taras says he prefers OO over functions. Also here is a tune...
-    
+
     We are the Priests of the Temples of Syrinx.
     Our great computers fill the hallowed halls.
     We are the Priests of the Temples of Syrinx.
@@ -64,7 +67,7 @@ class CPU:
         self.clock += 1
         if self.clock % 40 == 1:
             self.screen.append([])
-        if ((self.clock % 40) - 1) in [self.X-1, self.X, self.X+1]:
+        if ((self.clock % 40) - 1) in [self.X - 1, self.X, self.X + 1]:
             self.screen[-1].append("#")
         else:
             self.screen[-1].append(".")
@@ -82,15 +85,15 @@ if __name__ == "__main__":
     with open("input.txt", "r") as f:
         cpu = CPU([c.strip() for c in f])
     siggys = 0
-    while True: # a risky move
+    while True:  # a risky move
         clock, X = cpu.tick()
-        if clock in [20,60,100,140,180,220]:
+        if clock in [20, 60, 100, 140, 180, 220]:
             print(clock, X)
-            siggys += (clock * X)
+            siggys += clock * X
         if len(cpu.command_list) <= 0 and cpu.current_job is None:
             break
     print()
     print(siggys)
     print()
     for i in cpu.screen:
-        print(''.join(i))
+        print("".join(i))

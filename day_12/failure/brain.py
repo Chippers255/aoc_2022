@@ -1,17 +1,20 @@
 import math
-import time
-import numpy
 import random
+import time
 import typing
+
+import numpy
 
 
 class BrainWrinkle:
-    def __init__(self, input_size: int, output_size: int, function: str = "relu") -> None:
+    def __init__(
+        self, input_size: int, output_size: int, function: str = "relu"
+    ) -> None:
         """Store all required layer data so it can be accessed easily."""
         self.input = input_size
         self.output = output_size
         self.function = function
-        
+
     @staticmethod
     def relu(inputs: numpy.array) -> numpy.array:
         """An activation function for all hidden layers that returns only positive values or zero."""
@@ -26,9 +29,11 @@ class BrainWrinkle:
         except Exception as err:
             print(inputs)
             print(type(inputs))
-            raise(err)
-    
-    def think(self, inputs: numpy.array, weights: numpy.array, bias: numpy.array) -> numpy.array:
+            raise (err)
+
+    def think(
+        self, inputs: numpy.array, weights: numpy.array, bias: numpy.array
+    ) -> numpy.array:
         """Thinking is hard, especially with loops, so use a dot product. This is the bit that would run on
         a GPU if I knew how to do that."""
         thought = numpy.dot(inputs, weights)
@@ -51,10 +56,14 @@ class Brain:
         """Did I seriously just use a builder pattern?"""
         numpy.random.seed(int(time.time()))
         for wrinkle in self.wrinkles:
-            self.weights.append({
-                "W": numpy.random.uniform(-1.0, 1.0, size=(wrinkle.input, wrinkle.output)),
-                "B": numpy.zeros((1, wrinkle.output))
-            })
+            self.weights.append(
+                {
+                    "W": numpy.random.uniform(
+                        -1.0, 1.0, size=(wrinkle.input, wrinkle.output)
+                    ),
+                    "B": numpy.zeros((1, wrinkle.output)),
+                }
+            )
         return self
 
     @staticmethod
@@ -78,6 +87,8 @@ class Brain:
 
         for i in range(len(self.wrinkles)):
             input = result
-            result = self.wrinkles[i].think(input, self.weights[i]["W"], self.weights[i]["B"])
+            result = self.wrinkles[i].think(
+                input, self.weights[i]["W"], self.weights[i]["B"]
+            )
 
         return self._translate_thought(result)

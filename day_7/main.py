@@ -2,7 +2,7 @@ from tqdm import tqdm
 
 
 def dir_to_string(cwd: list) -> str:
-    return '/'.join(cwd).replace("//", "/")
+    return "/".join(cwd).replace("//", "/")
 
 
 def build_directory(tree: dict, cwd: str) -> dict:
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     with open("input.txt") as f:
         for row in tqdm(f):
             fixed_row = row.replace("\n", "").split(" ")
-            if fixed_row[1] == "cd": # change dir
+            if fixed_row[1] == "cd":  # change dir
                 if fixed_row[2] == "..":
                     CWD.pop()
                 elif fixed_row[2] == "/":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
                 DIRECTORY = build_directory(DIRECTORY, CWD)
             elif fixed_row[0].isnumeric():
                 DIRECTORY = size_rollup(DIRECTORY, CWD, int(fixed_row[0]))
-            else: # don't let the noise distract you
+            else:  # don't let the noise distract you
                 pass
     # part 1
     filtered_dir = {k: v for k, v in DIRECTORY.items() if v <= 100000}
